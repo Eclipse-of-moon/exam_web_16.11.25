@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Заголовок поста -->
+    <h1 class="mb-4">{{ post.title }}</h1>
+
+    <!-- Информация об авторе и дате -->
+    <p class="text-muted">
+        Опубликовано {{ post.date.strftime('%d.%m.%Y') }} | Автор: {{ post.author }}
+    </p>
+
+    <!-- Изображение поста -->
+    <img src="{{ url_for('static', filename='images/' + post.image_id) }}" class="img-fluid mb-4" alt="Изображение поста">
+
+    <!-- Текст поста -->
+    <p>{{ post.text }}</p>
+
+    <!-- Форма для добавления комментария -->
+    <div class="my-5">
+        <h3>Оставьте комментарий</h3>
+        <form method="POST" action="#">
+            <div class="form-group">
+                <textarea class="form-control" rows="3" placeholder="Введите ваш комментарий"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Отправить</button>
+        </form>
+    </div>
+
+    <!-- Список комментариев -->
+    <div class="comments-section">
+        <h3>Комментарии</h3>
+        {% for comment in post.comments %}
+            <div class="comment my-3 p-3 border rounded">
+                <p><strong>{{ comment.author }}</strong>: {{ comment.text }}</p>
+                {% if comment.replies %}
+                    <div class="replies pl-4 mt-2">
+                        {% for reply in comment.replies %}
+                            <div class="reply p-2 border rounded">
+                                <p><strong>{{ reply.author }}</strong>: {{ reply.text }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
