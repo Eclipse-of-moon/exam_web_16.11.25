@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои рецензии{% endblock %}
+
+{% block content %}
+    <h1>Мои рецензии</h1>
+    {% if reviews %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Книга</th>
+                    <th>Оценка</th>
+                    <th>Текст рецензии</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                    <tr>
+                        <td>{{ review.book.title }}</td>
+                        <td>{{ review.rating }}</td>
+                        <td>{{ review.text }}</td>
+                        <td>{{ review.status.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>У вас пока нет рецензий.</p>
+    {% endif %}
+{% endblock %}
