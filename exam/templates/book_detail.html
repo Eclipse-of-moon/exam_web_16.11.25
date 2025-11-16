@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ book.title }}</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ url_for('routes.uploaded_file', filename=book.cover.filename) }}" alt="{{ book.title }}" class="img-fluid">
+        </div>
+        <div class="col-md-8">
+            <p><strong>Автор:</strong> {{ book.author }}</p>
+            <p><strong>Год:</strong> {{ book.year }}</p>
+            <p><strong>Издательство:</strong> {{ book.publisher }}</p>
+            <p><strong>Описание:</strong> {{ book.description }}</p>
+            <p><strong>Жанры:</strong>
+                {% for genre in book.genres %}
+                    {{ genre.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p><strong>Количество страниц:</strong> {{ book.pages }}</p>
+            <p><strong>Средняя оценка:</strong> {{ "{:.2f}".format(avg_rating) }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Отзывы</h3>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ review.author.first_name }} {{ review.author.last_name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Оценка: {{ review.rating }}</h6>
+                    <p class="card-text">{{ review.text }}</p>
+                    <p class="card-text"><small class="text-muted">{{ review.date_added.strftime('%d.%m.%Y %H:%M:%S') }}</small></p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Нет отзывов для этой книги.</p>
+    {% endif %}
+
+
+    <hr>
+
+        {% if current_user.is_authenticated %}
+        {% if current_user.role.name == 'user' %}
+            <h3>Ваш отзыв</h3>
+            {% if user_review %}
+                {% if user_review.status.name == 'на рассмотрении' %}
+                    <p>Ваша рецензия на рассмотрении.</p>
+                {% elif user_review.status.name == 'одобрена' %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Ваш отзыв</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Оценка: {{ user_review.rating }}</h6>
+                            <p class="card-text">{{ user_review.text }}</p>
+                            <p class="card-text"><small class="text-muted">{{ user_review.date_added.strftime('%d.%m.%Y %H:%M:%S') }}</small></p>
+                        </div>
+                    </div>
+                {% elif user_review.status.name == 'отклонена' %}
+                    <p>Ваша рецензия была отклонена. Пожалуйста, напишите другую.</p>
+                    <a href="{{ url_for('routes.add_review', book_id=book.id) }}" class="btn btn-primary">Написать рецензию</a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('routes.add_review', book_id=book.id) }}" class="btn btn-primary">Написать рецензию</a>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <p>Войдите, чтобы оставить отзыв.</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import "_formhelpers.html" as form_helpers %}
+
+{% block title %}Добавить книгу{% endblock %}
+
+{% block content %}
+    <h1>Добавить книгу</h1>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form_helpers.render_field(form.title) }}
+
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description(class="form-control", id="description_editor") }}
+            {% for error in form.description.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        {{ form_helpers.render_field(form.year) }}
+        {{ form_helpers.render_field(form.publisher) }}
+        {{ form_helpers.render_field(form.author) }}
+        {{ form_helpers.render_field(form.pages) }}
+        <div class="form-group">
+            {{ form.cover.label }}
+            {{ form.cover(class="form-control-file") }}
+            {% for error in form.cover.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="genres">Жанры</label>
+            <br>
+            {% for genre in genres %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="genres" id="genre_{{ genre.id }}" value="{{ genre.id }}">
+                    <label class="form-check-label" for="genre_{{ genre.id }}">
+                        {{ genre.name }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+    <script>
+        var simplemde = new SimpleMDE({ element: document.getElementById("description_editor") });
+    </script>
+
+{% endblock %}
