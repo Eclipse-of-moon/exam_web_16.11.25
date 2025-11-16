@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Форма номера телефона{% endblock %}
+
+{% block content %}
+    <h1>Проверка номера телефона</h1>
+    <form method="POST">
+        <div class="mb-3">
+            {{ form.phone_number.label(class="form-label") }}
+            {{ form.phone_number(class_="form-control " + ("is-invalid" if form.phone_number.errors else "")) }}
+            {% if form.phone_number.errors %}
+                {% for error in form.phone_number.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+    {% if formatted_number %}
+        <h2>Отформатированный номер:</h2>
+        <p>{{ formatted_number }}</p>
+    {% endif %}
+{% endblock %}

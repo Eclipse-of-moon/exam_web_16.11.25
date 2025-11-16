@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>URL Parameters</h1>
+  <ul>
+    {% for key, value in request.args.items() %}
+      <li><b>{{ key }}:</b> {{ value }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

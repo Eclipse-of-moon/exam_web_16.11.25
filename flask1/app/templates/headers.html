@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Request Headers</h1>
+  <ul>
+    {% for key, value in request.headers.items() %}
+      <li><b>{{ key }}:</b> {{ value }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

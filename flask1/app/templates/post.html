@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="post">
+    <h1>{{ post.title }}</h1>
+    <p class="post-info">
+      Автор: {{ post.author }} | Дата: {{ post.date.strftime('%d.%m.%Y') }}
+    </p>
+
+    <img src="{{ url_for('static', filename='images/' + post.image_id) }}" alt="{{ post.title }}">
+
+    <p>{{ post.text | safe }}</p>
+
+    <h2>Комментарии</h2>
+    {% if post.comments %}
+      <div class="comments">
+        {% for comment in post.comments %}
+          <div class="comment">
+            <div class="comment-avatar">
+              <img src="" alt="{{ comment.author }}">
+            </div>
+            <div class="comment-content">
+              <p class="comment-author">{{ comment.author }}</p>
+              <p class="comment-text">{{ comment.text }}</p>
+              <p class="comment-date">{{ comment.date.strftime('%d.%m.%Y') }}</p>
+
+              {% if comment.replies %}
+                <div class="replies">
+                  {% for reply in comment.replies %}
+                    <div class="reply">
+                      <p class="comment-author">{{ reply.author }}</p>
+                      <p class="comment-text">{{ reply.text }}</p>
+                      <p class="comment-date">{{ reply.date.strftime('%d.%m.%Y') }}</p>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Еще нет комментариев.</p>
+    {% endif %}
+
+    <h2>Оставить комментарий</h2>
+    <form method="POST">
+      <textarea class="form-control" name="comment_text" rows="3" placeholder="Ваш комментарий"></textarea><br>
+      <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+  </div>
+{% endblock %}
