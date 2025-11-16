@@ -1,0 +1,59 @@
+{# templates/edit_user.html #}
+{% extends 'base.html' %}
+
+{% block title %}{% if user.id == current_user.id | int %}Редактировать свой профиль{% else %}Редактировать пользователя{% endif %}{% endblock %}
+
+{% block content %}
+    <h2>{% if user.id == current_user.id | int %}Редактировать свой профиль{% else %}Редактировать пользователя{% endif %}</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.last_name.label }}
+            {{ form.last_name(class="form-control", value=user.last_name, **{'aria-describedby': 'lastNameHelp'}) }}
+            {% if form.last_name.errors %}
+                <small id="lastNameHelp" class="form-text text-danger">
+                    {% for error in form.last_name.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.first_name.label }}
+            {{ form.first_name(class="form-control", value=user.first_name, **{'aria-describedby': 'firstNameHelp'}) }}
+            {% if form.first_name.errors %}
+                <small id="firstNameHelp" class="form-text text-danger">
+                    {% for error in form.first_name.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.middle_name.label }}
+            {{ form.middle_name(class="form-control", value=user.middle_name) }}
+        </div>
+
+        {# Отображаем поле role только для администраторов #}
+        {% if current_user.is_authenticated and current_user.role.name == 'Администратор' %}
+            <div class="form-group">
+                {{ form.role.label }}
+                {{ form.role(class="form-control") }}
+                {% if form.role.errors %}
+                    <small id="roleHelp" class="form-text text-danger">
+                        {% for error in form.role.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </small>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+    <br>
+    <a href="{{ url_for('routes.index') }}" class="btn btn-secondary">Назад к списку</a>
+{% endblock %}

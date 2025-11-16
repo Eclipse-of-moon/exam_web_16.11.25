@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Отчет по посещаемости страниц</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>№</th>  <!-- Добавляем заголовок для порядкового номера -->
+                <th>Страница</th>
+                <th>Количество посещений</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, row in page_visits %}  <!-- Изменяем page_visits.items на page_visits -->
+                <tr>
+                    <td>{{ index }}</td>  <!-- Отображаем порядковый номер -->
+                    <td>{{ row.path }}</td>
+                    <td>{{ row.count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if pagination.has_prev %}  <!-- Используем pagination -->
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('reports.page_visits', page=pagination.prev_num) }}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}  <!-- Используем pagination -->
+                {% if page_num %}
+                    {% if pagination.page == page_num %}  <!-- Используем pagination -->
+                        <li class="page-item active">
+                            <a class="page-link" href="{{ url_for('reports.page_visits', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('reports.page_visits', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">&hellip;</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}  <!-- Используем pagination -->
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('reports.page_visits', page=pagination.next_num) }}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Кнопка экспорта в CSV -->
+    <a href="{{ url_for('reports.page_visits', export_csv=True) }}" class="btn btn-primary">Экспорт в CSV</a>
+
+    <!-- Кнопка назад -->
+    <a href="{{ url_for('reports.visit_log') }}" class="btn btn-secondary">Назад к отчету</a>
+{% endblock %}
